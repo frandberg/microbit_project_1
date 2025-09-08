@@ -20,4 +20,5 @@ basic.forever(function () {
     velocity = input.acceleration(Dimension.X) * 0.00982 * (delat_time / 1000)
     position = position + velocity * delat_time
     last_time = input.runningTime()
+    basic.showNumber(Math.round(position))
 })
