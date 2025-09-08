@@ -1,5 +1,10 @@
-
-
+input.onButtonPressed(Button.A, function () {
+    if (game_stage == "role_selection") {
+        role = "dealer"
+        basic.showString("D")
+        game_stage = "starting"
+    }
+})
 function build_card_list () {
     cards = []
     i = 0
@@ -8,22 +13,31 @@ function build_card_list () {
             cards.push("" + suit + card_value)
             i += 1
         }
-        for (let card_value of card_values_alpha) {
-            cards.push("" + suit + card_value)
+        for (let card_value2 of card_values_alpha) {
+            cards.push("" + suit + card_value2)
             i += 1
         }
     }
 }
-let hejsan = ""
-let last_time = 0
+input.onButtonPressed(Button.B, function () {
+    if (game_stage == "role_selection") {
+        role = "player"
+        basic.showString("P")
+        game_stage = "starting"
+    }
+})
+/**
+ * "dealer" or "player"
+ */
 let i = 0
+let role = ""
 let cards: string[] = []
 let card_values: number[] = []
 let card_values_alpha: string[] = []
 let suits: string[] = []
-let velocity = 0
-let position = 0
-let delat_time = 0
+let game_stage = ""
+game_stage = "role_selection"
+basic.showString("A=dealer,B=player")
 suits = [
 "H",
 "D",
@@ -52,36 +66,5 @@ for (let värde of cards) {
     datalogger.log(datalogger.createCV(värde, värde))
 }
 basic.forever(function () {
-    delat_time = input.runningTime() - last_time
-    velocity = input.acceleration(Dimension.X) * 0.00982 * (delat_time / 1000)
-    position = position + velocity * delat_time
-    last_time = input.runningTime()
-  
-    hejsan = "HEJSAN"
-    basic.showNumber(Math.round(position))
-=======
-// "dealer" or "player"
-input.onButtonPressed(Button.A, function () {
-    if (game_stage == "role_selection") {
-        role = "dealer"
-        basic.showString("D")
-        game_stage = "starting"
-    }
-})
-input.onButtonPressed(Button.B, function () {
-    if (game_stage == "role_selection") {
-        role = "player"
-        basic.showString("P")
-        game_stage = "starting"
-    }
-})
-let role = ""
-let game_stage = ""
-basic.showString("A=dealer,B=player")
-// role_selection, etc
-game_stage = "role_selection"
-// role_selection, etc
-basic.forever(function () {
 	
-
 })
