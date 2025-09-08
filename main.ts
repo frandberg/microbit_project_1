@@ -1,4 +1,33 @@
+/**
+ * "dealer" or "player"
+ */
+function init_list_values () {
+    suits = [
+    "H",
+    "D",
+    "C",
+    "S"
+    ]
+    card_values_alpha = [
+    "J",
+    "Q",
+    "K",
+    "A"
+    ]
+    card_values = [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+    ]
+}
 input.onButtonPressed(Button.A, function () {
+    led.stopAnimation()
     if (game_stage == "role_selection") {
         role = "dealer"
         basic.showString("D")
@@ -10,61 +39,37 @@ function build_card_list () {
     i = 0
     for (let suit of suits) {
         for (let card_value of card_values) {
-            cards.push("" + suit + card_value)
+            cards.push("" + card_value + suit)
             i += 1
         }
         for (let card_value2 of card_values_alpha) {
-            cards.push("" + suit + card_value2)
+            cards.push("" + card_value2 + suit)
             i += 1
         }
     }
 }
 input.onButtonPressed(Button.B, function () {
+    led.stopAnimation()
     if (game_stage == "role_selection") {
         role = "player"
         basic.showString("P")
         game_stage = "starting"
     }
 })
-/**
- * "dealer" or "player"
- */
 let i = 0
 let role = ""
-let cards: string[] = []
 let card_values: number[] = []
 let card_values_alpha: string[] = []
 let suits: string[] = []
+let cards: string[] = []
 let game_stage = ""
 game_stage = "role_selection"
-basic.showString("A=dealer,B=player")
-suits = [
-"H",
-"D",
-"C",
-"S"
-]
-card_values_alpha = [
-"J",
-"Q",
-"K",
-"A"
-]
-card_values = [
-2,
-3,
-4,
-5,
-6,
-7,
-8,
-9,
-10
-]
+init_list_values()
 build_card_list()
 for (let värde of cards) {
     datalogger.log(datalogger.createCV(värde, värde))
 }
+basic.showString("A=DEALER,B=PLAYER")
 basic.forever(function () {
 	
 })
