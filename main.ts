@@ -27,11 +27,8 @@ function init_list_values () {
     ]
 }
 input.onButtonPressed(Button.A, function () {
-    led.stopAnimation()
     if (game_stage == "role_selection") {
-        role = "dealer"
-        basic.showString("D")
-        game_stage = "starting"
+        select_role("dealer")
     }
 })
 function build_card_list () {
@@ -49,15 +46,26 @@ function build_card_list () {
     }
 }
 input.onButtonPressed(Button.B, function () {
-    led.stopAnimation()
     if (game_stage == "role_selection") {
-        role = "player"
-        basic.showString("P")
-        game_stage = "starting"
+        select_role("player")
     }
 })
-let i = 0
+function select_role (role: string) {
+    game_stage = "starting"
+    role = role
+    led.stopAnimation()
+    if (role == "dealer") {
+        _display_char = "D"
+    } else if (role == "player") {
+        _display_char = "P"
+    } else {
+        _display_char = "ERROR"
+    }
+    basic.showString(_display_char)
+}
+let _display_char = ""
 let role = ""
+let i = 0
 let card_values: number[] = []
 let card_values_alpha: string[] = []
 let suits: string[] = []
@@ -69,7 +77,8 @@ build_card_list()
 for (let värde of cards) {
     datalogger.log(datalogger.createCV(värde, värde))
 }
-basic.showString("A=DEALER,B=PLAYER")
 basic.forever(function () {
-	
+    while (game_stage == "role_selection") {
+        basic.showString("A=DEALER,B=PLAYER")
+    }
 })
