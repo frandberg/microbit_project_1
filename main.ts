@@ -47,7 +47,7 @@ function build_card_list () {
 }
 function init_constants () {
     GAME_STAGE_ROLE_SELECTION = 0
-    GAME_STAGE_STARTING = 1
+    GAME_STAGE_FINDING_PLAYERS = 1
     ROLE_DEALER = 0
     ROLE_PLAYER = 1
 }
@@ -57,7 +57,7 @@ input.onButtonPressed(Button.B, function () {
     }
 })
 function select_role (role: number) {
-    game_stage = GAME_STAGE_STARTING
+    game_stage = GAME_STAGE_FINDING_PLAYERS
     role = role
     led.stopAnimation()
     if (role == ROLE_DEALER) {
@@ -72,7 +72,7 @@ function select_role (role: number) {
 let _display_char = ""
 let role = 0
 let ROLE_PLAYER = 0
-let GAME_STAGE_STARTING = 0
+let GAME_STAGE_FINDING_PLAYERS = 0
 let i = 0
 let ROLE_DEALER = 0
 let card_values: number[] = []
