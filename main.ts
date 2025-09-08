@@ -1,3 +1,4 @@
+
 function build_card_list () {
     cards = []
     i = 0
@@ -54,5 +55,7 @@ basic.forever(function () {
     velocity = input.acceleration(Dimension.X) * 0.00982 * (delat_time / 1000)
     position = position + velocity * delat_time
     last_time = input.runningTime()
+  
     hejsan = "HEJSAN"
+    basic.showNumber(Math.round(position))
 })
