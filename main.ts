@@ -27,8 +27,8 @@ function init_list_values () {
     ]
 }
 input.onButtonPressed(Button.A, function () {
-    if (game_stage == "role_selection") {
-        select_role("dealer")
+    if (game_stage == GAME_STAGE_ROLE_SELECTION) {
+        select_role(ROLE_DEALER)
     }
 })
 function build_card_list () {
@@ -45,18 +45,24 @@ function build_card_list () {
         }
     }
 }
+function init_constants () {
+    GAME_STAGE_ROLE_SELECTION = 0
+    GAME_STAGE_STARTING = 1
+    ROLE_DEALER = 0
+    ROLE_PLAYER = 1
+}
 input.onButtonPressed(Button.B, function () {
-    if (game_stage == "role_selection") {
-        select_role("player")
+    if (game_stage == GAME_STAGE_ROLE_SELECTION) {
+        select_role(ROLE_PLAYER)
     }
 })
-function select_role (role: string) {
-    game_stage = "starting"
+function select_role (role: number) {
+    game_stage = GAME_STAGE_STARTING
     role = role
     led.stopAnimation()
-    if (role == "dealer") {
+    if (role == ROLE_DEALER) {
         _display_char = "D"
-    } else if (role == "player") {
+    } else if (role == ROLE_PLAYER) {
         _display_char = "P"
     } else {
         _display_char = "ERROR"
@@ -64,21 +70,31 @@ function select_role (role: string) {
     basic.showString(_display_char)
 }
 let _display_char = ""
-let role = ""
+let role = 0
+let ROLE_PLAYER = 0
+let GAME_STAGE_STARTING = 0
 let i = 0
+let ROLE_DEALER = 0
 let card_values: number[] = []
 let card_values_alpha: string[] = []
 let suits: string[] = []
 let cards: string[] = []
-let game_stage = ""
-game_stage = "role_selection"
+let GAME_STAGE_ROLE_SELECTION = 0
+let game_stage = 0
+init_constants()
+game_stage = GAME_STAGE_ROLE_SELECTION
 init_list_values()
 build_card_list()
 for (let värde of cards) {
     datalogger.log(datalogger.createCV(värde, värde))
 }
+while (game_stage == GAME_STAGE_ROLE_SELECTION) {
+    basic.showString("A=DEALER,B=PLAYER")
+}
 basic.forever(function () {
-    while (game_stage == "role_selection") {
-        basic.showString("A=DEALER,B=PLAYER")
+    if (role == ROLE_PLAYER) {
+    	
+    } else {
+    	
     }
 })
