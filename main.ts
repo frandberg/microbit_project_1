@@ -1,6 +1,18 @@
-/**
- * "dealer" or "player"
- */
+function scramble_cards () {
+    scrambled_cards = []
+    _temp_cards = cards
+    _rand = 0
+    while (_temp_cards.length != 0) {
+        _rand = randint(0, _temp_cards.length - 1)
+        datalogger.log(
+        datalogger.createCV("_rand", _rand),
+        datalogger.createCV("_temp_cards len", _temp_cards.length)
+        )
+        _value = _temp_cards[_rand]
+        _temp_cards.removeAt(_rand)
+        scrambled_cards.push(_value)
+    }
+}
 function init_list_values () {
     suits = [
     "H",
@@ -52,7 +64,7 @@ function init_constants () {
     ROLE_PLAYER = 1
 }
 input.onButtonPressed(Button.B, function () {
-    if (game_stage == GAME_STAGE_ROLE_SELECTION) {
+    if (game_stage == 0) {
         select_role(ROLE_PLAYER)
     }
 })
@@ -78,21 +90,25 @@ let ROLE_DEALER = 0
 let card_values: number[] = []
 let card_values_alpha: string[] = []
 let suits: string[] = []
+let _value = ""
+let _rand = 0
 let cards: string[] = []
+let _temp_cards: string[] = []
+let scrambled_cards: string[] = []
 let GAME_STAGE_ROLE_SELECTION = 0
 let game_stage = 0
 init_constants()
 game_stage = GAME_STAGE_ROLE_SELECTION
 init_list_values()
 build_card_list()
-for (let värde of cards) {
-    datalogger.log(datalogger.createCV(värde, värde))
-}
+scramble_cards()
 while (game_stage == GAME_STAGE_ROLE_SELECTION) {
     basic.showString("A=DEALER,B=PLAYER")
 }
 basic.forever(function () {
     if (role == ROLE_PLAYER) {
+    	
+    } else if (role == ROLE_DEALER) {
     	
     } else {
     	
