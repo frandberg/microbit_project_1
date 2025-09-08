@@ -1,24 +1,24 @@
-function test () {
-    while (x < 5) {
-        while (y < 5) {
-            led.plot(x, y)
-            y = y + 1
-            basic.pause(50)
-        }
-        x = x + 1
+// "dealer" or "player"
+input.onButtonPressed(Button.A, function () {
+    if (game_stage == "role_selection") {
+        role = "dealer"
+        basic.showString("D")
+        game_stage = "starting"
     }
-}
-let last_time = 0
-let y = 0
-let x = 0
-let velocity = 0
-let position = 0
-let delat_time = 0
-test()
+})
+input.onButtonPressed(Button.B, function () {
+    if (game_stage == "role_selection") {
+        role = "player"
+        basic.showString("P")
+        game_stage = "starting"
+    }
+})
+let role = ""
+let game_stage = ""
+basic.showString("A=dealer,B=player")
+// role_selection, etc
+game_stage = "role_selection"
+// role_selection, etc
 basic.forever(function () {
-    delat_time = input.runningTime() - last_time
-    velocity = input.acceleration(Dimension.X) * 0.00982 * (delat_time / 1000)
-    position = position + velocity * delat_time
-    last_time = input.runningTime()
-    basic.showNumber(Math.round(position))
+	
 })
