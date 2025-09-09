@@ -117,7 +117,7 @@ function msg_recieved_dealer (sender: number, msg_kind: number, msg_contents: st
 	
 }
 input.onButtonPressed(Button.B, function () {
-    if (game_stage == 0) {
+    if (game_stage == GAME_STAGE_ROLE_SELECTION) {
         select_role(ROLE_PLAYER)
     }
 })
