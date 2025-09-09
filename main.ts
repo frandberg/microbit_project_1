@@ -37,6 +37,8 @@ function scramble_cards () {
         _temp_cards.removeAt(_rand)
         scrambled_cards.push(_value)
     }
+function send_message (reciever: number, kind: number, contents: string) {
+    radio.sendString("" + reciever + "|" + kind + "|" + contents)
 }
 // "dealer" or "player"
 function init_list_values () {
@@ -89,10 +91,6 @@ function get_message_kind (message: string) {
         }
     }
     return -1
-}
-function send_message (reciever: number, kind: number, contents: string) {
-    _message = "" + reciever + "|" + kind + "|" + contents
-    radio.sendString(_message)
 }
 input.onButtonPressed(Button.A, function () {
     if (game_stage == GAME_STAGE_ROLE_SELECTION) {
@@ -162,9 +160,31 @@ input.onButtonPressed(Button.AB, function () {
         }
     }
 })
+
+function add_player(player_id: number){
+    players.push(player_id)
+}
+function get_player_index(player_id: number): number{
+    for (let _l = 0; _l < players.length; _l++){
+        if(players[_l] == player_id){
+            return _l
+        }
+    }
+    return -1
+}
+
+
+function msg_recieved_dealer (sender: number, msg_kind: number, msg_contents: string) {
+	if(msg_kind == MSG_PLAYER_JOIN){
+        add_player(radio.receivedPacket(RadioPacketProperty.SerialNumber))
+    }
+}
 input.onButtonPressed(Button.B, function () {
     if (game_stage == GAME_STAGE_ROLE_SELECTION) {
         select_role(ROLE_PLAYER)
+        send_message(0, MSG_PLAYER_JOIN, "")
+
+        
     }
 })
 function msg_recieved_player (sender: number, msg_kind: number, msg_contents: string) {
@@ -173,6 +193,9 @@ function msg_recieved_player (sender: number, msg_kind: number, msg_contents: st
     }
 }
 function select_role (selected_role: number) {
+    
+}
+function select_role (role: number) {
     game_stage = GAME_STAGE_FINDING_PLAYERS
     role = selected_role
     led.stopAnimation()
@@ -191,6 +214,10 @@ let GAME_STAGE_FINDING_PLAYERS = 0
 let i = 0
 let cards: string[] = []
 let GAME_STAGE_PLAYING = 0
+let GAME_STAGE_FINDING_PLAYERS = 0
+let GAME_STAGE_ROLE_SELECTION = 0
+
+let i = 0
 let _reciever = 0
 let ROLE_DEALER = 0
 let _message = ""
@@ -219,11 +246,28 @@ let role = 0
 role = -1
 ROLE_PLAYER = 1
 serial_number = control.deviceSerialNumber()
+let _message = ""
+let cards: string[] = []
+let dealer_id = 0
+
+let game_stage = 0
+let role = 0
+let ROLE_DEALER = 0
+let ROLE_PLAYER = 1
+let MSG_PLAYER_JOIN = 0
+let serial_number = 0
+serial_number = control.deviceSerialNumber()
+role = ROLE_DEALER
+let players : number[] = []
 init_constants()
 game_stage = GAME_STAGE_ROLE_SELECTION
 init_list_values()
 build_card_list()
 scramble_cards()
+
+for (let värde of cards) {
+    datalogger.log(datalogger.createCV(värde, värde))
+}
 while (game_stage == GAME_STAGE_ROLE_SELECTION) {
     basic.showString("A=DEALER,B=PLAYER")
 }
