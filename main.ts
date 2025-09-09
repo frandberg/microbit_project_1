@@ -116,6 +116,9 @@ function init_constants () {
 function msg_recieved_dealer (sender: number, msg_kind: number, msg_contents: string) {
 	
 }
+function test () {
+	
+}
 input.onButtonPressed(Button.B, function () {
     if (game_stage == 0) {
         select_role(ROLE_PLAYER)
