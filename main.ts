@@ -116,6 +116,13 @@ function init_constants () {
 function msg_recieved_dealer (sender: number, msg_kind: number, msg_contents: string) {
 	
 }
+function give_cards () {
+    _dummy_players = ["player1", "player2", "player3"]
+    player_cards = []
+    for (let _i2 = 0; _i2 <= _dummy_players.length; _i2++) {
+    	
+    }
+}
 input.onButtonPressed(Button.B, function () {
     if (game_stage == GAME_STAGE_ROLE_SELECTION) {
         select_role(ROLE_PLAYER)
@@ -138,6 +145,8 @@ function select_role (role: number) {
     basic.showString(_display_char)
 }
 let _display_char = ""
+let player_cards: number[] = []
+let _dummy_players: string[] = []
 let GAME_STAGE_FINDING_PLAYERS = 0
 let i = 0
 let _reciever = 0
