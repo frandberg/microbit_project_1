@@ -1,3 +1,4 @@
+
 function scramble_cards () {
     scrambled_cards = []
     _temp_cards = cards
@@ -13,6 +14,64 @@ function scramble_cards () {
         scrambled_cards.push(_value)
     }
 }
+function create_message (reciever: number, kind: number, contents: string) {
+    _message = "" + reciever + "|" + kind + "|" + contents
+    return _message
+}
+function get_message_contents (message: string) {
+    for (let _k = 0; _k <= message.length - 1; _k++) {
+        if (message.charAt(_k) == "|") {
+            _delimeters_found += 1
+            if (_delimeters_found == 2) {
+                return message.substr(_k + 1, message.length - _k)
+            } else {
+                _last_delimeter_index = _k
+            }
+        }
+    }
+    return ""
+}
+function get_message_kind (message: string) {
+    for (let _j = 0; _j <= message.length - 1; _j++) {
+        if (message.charAt(_j) == "|") {
+            _delimeters_found2 += 1
+            if (_delimeters_found2 == 2) {
+                return parseInt(message.substr(_last_delimeter_index2 + 1, _j))
+            } else {
+                _last_delimeter_index2 = _j
+            }
+        }
+    }
+    return -1
+}
+radio.onReceivedString(function (msg) {
+    // Dealer receives join requests while finding players
+    _reciever = get_message_reciever(msg)
+    if (_reciever == serial_number) {
+        if (role == ROLE_DEALER) {
+            msg_recieved_dealer(radio.receivedPacket(RadioPacketProperty.SerialNumber), get_message_kind(msg), get_message_contents(msg))
+        } else if (role == ROLE_PLAYER) {
+            msg_recieved_player(radio.receivedPacket(RadioPacketProperty.SerialNumber), get_message_kind(msg), get_message_contents(msg))
+        }
+    }
+})
+function get_message_reciever (message: string) {
+    for (let _i = 0; _i <= message.length - 1; _i++) {
+        if (message.charAt(_i) == "|") {
+            return parseInt(message.substr(0, _i))
+        }
+    }
+    return -1
+}
+function msg_recieved_dealer (sender: number, msg_kind: number, msg_contents: string) {
+	
+}
+function msg_recieved_player (sender: number, msg_kind: number, msg_contents: string) {
+	
+}
+/**
+ * "dealer" or "player"
+ */
 function init_list_values () {
     suits = [
     "H",
@@ -97,6 +156,17 @@ let _temp_cards: string[] = []
 let scrambled_cards: string[] = []
 let GAME_STAGE_ROLE_SELECTION = 0
 let game_stage = 0
+
+let _reciever = 0
+let _last_delimeter_index2 = 0
+let _delimeters_found2 = 0
+let _last_delimeter_index = 0
+let _delimeters_found = 0
+let _message = ""
+let serial_number = 0
+serial_number = control.deviceSerialNumber()
+ROLE_PLAYER = 1
+role = ROLE_DEALER
 init_constants()
 game_stage = GAME_STAGE_ROLE_SELECTION
 init_list_values()
@@ -114,3 +184,4 @@ basic.forever(function () {
     	
     }
 })
+
