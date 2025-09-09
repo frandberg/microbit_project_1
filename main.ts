@@ -1,4 +1,7 @@
-
+function create_message (reciever: number, kind: number, contents: string) {
+    _message = "" + reciever + "|" + kind + "|" + contents
+    return _message
+}
 function scramble_cards () {
     scrambled_cards = []
     _temp_cards = cards
@@ -14,9 +17,31 @@ function scramble_cards () {
         scrambled_cards.push(_value)
     }
 }
-function create_message (reciever: number, kind: number, contents: string) {
-    _message = "" + reciever + "|" + kind + "|" + contents
-    return _message
+// "dealer" or "player"
+function init_list_values () {
+    suits = [
+    "H",
+    "D",
+    "C",
+    "S"
+    ]
+    card_values_alpha = [
+    "J",
+    "Q",
+    "K",
+    "A"
+    ]
+    card_values = [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+    ]
 }
 function get_message_contents (message: string) {
     for (let _k = 0; _k <= message.length - 1; _k++) {
@@ -44,6 +69,11 @@ function get_message_kind (message: string) {
     }
     return -1
 }
+input.onButtonPressed(Button.A, function () {
+    if (game_stage == GAME_STAGE_ROLE_SELECTION) {
+        select_role(ROLE_DEALER)
+    }
+})
 radio.onReceivedString(function (msg) {
     // Dealer receives join requests while finding players
     _reciever = get_message_reciever(msg)
@@ -63,45 +93,6 @@ function get_message_reciever (message: string) {
     }
     return -1
 }
-function msg_recieved_dealer (sender: number, msg_kind: number, msg_contents: string) {
-	
-}
-function msg_recieved_player (sender: number, msg_kind: number, msg_contents: string) {
-	
-}
-/**
- * "dealer" or "player"
- */
-function init_list_values () {
-    suits = [
-    "H",
-    "D",
-    "C",
-    "S"
-    ]
-    card_values_alpha = [
-    "J",
-    "Q",
-    "K",
-    "A"
-    ]
-    card_values = [
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10
-    ]
-}
-input.onButtonPressed(Button.A, function () {
-    if (game_stage == GAME_STAGE_ROLE_SELECTION) {
-        select_role(ROLE_DEALER)
-    }
-})
 function build_card_list () {
     cards = []
     i = 0
@@ -122,11 +113,17 @@ function init_constants () {
     ROLE_DEALER = 0
     ROLE_PLAYER = 1
 }
+function msg_recieved_dealer (sender: number, msg_kind: number, msg_contents: string) {
+	
+}
 input.onButtonPressed(Button.B, function () {
     if (game_stage == 0) {
         select_role(ROLE_PLAYER)
     }
 })
+function msg_recieved_player (sender: number, msg_kind: number, msg_contents: string) {
+	
+}
 function select_role (role: number) {
     game_stage = GAME_STAGE_FINDING_PLAYERS
     role = role
@@ -141,11 +138,13 @@ function select_role (role: number) {
     basic.showString(_display_char)
 }
 let _display_char = ""
-let role = 0
-let ROLE_PLAYER = 0
 let GAME_STAGE_FINDING_PLAYERS = 0
 let i = 0
-let ROLE_DEALER = 0
+let _reciever = 0
+let _last_delimeter_index2 = 0
+let _delimeters_found2 = 0
+let _last_delimeter_index = 0
+let _delimeters_found = 0
 let card_values: number[] = []
 let card_values_alpha: string[] = []
 let suits: string[] = []
@@ -154,15 +153,12 @@ let _rand = 0
 let cards: string[] = []
 let _temp_cards: string[] = []
 let scrambled_cards: string[] = []
+let _message = ""
 let GAME_STAGE_ROLE_SELECTION = 0
 let game_stage = 0
-
-let _reciever = 0
-let _last_delimeter_index2 = 0
-let _delimeters_found2 = 0
-let _last_delimeter_index = 0
-let _delimeters_found = 0
-let _message = ""
+let ROLE_DEALER = 0
+let role = 0
+let ROLE_PLAYER = 0
 let serial_number = 0
 serial_number = control.deviceSerialNumber()
 ROLE_PLAYER = 1
@@ -184,4 +180,3 @@ basic.forever(function () {
     	
     }
 })
-
