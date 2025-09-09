@@ -23,6 +23,47 @@ function init_list_values () {
     10
     ]
 }
+function scramble_cards () {
+    scrambled_cards = []
+    _temp_cards = cards
+    _rand = 0
+    while (_temp_cards.length != 0) {
+        _rand = randint(0, _temp_cards.length - 1)
+        datalogger.log(
+        datalogger.createCV("_rand", _rand),
+        datalogger.createCV("_temp_cards len", _temp_cards.length)
+        )
+        _value = _temp_cards[_rand]
+        _temp_cards.removeAt(_rand)
+        scrambled_cards.push(_value)
+    }
+}
+// "dealer" or "player"
+function init_list_values () {
+    suits = [
+    "H",
+    "D",
+    "C",
+    "S"
+    ]
+    card_values_alpha = [
+    "J",
+    "Q",
+    "K",
+    "A"
+    ]
+    card_values = [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+    ]
+}
 function get_message_contents (message: string) {
     for (let _k = 0; _k <= message.length - 1; _k++) {
         if (message.charAt(_k) == "|") {
@@ -160,8 +201,18 @@ let _delimeters_found = 0
 let card_values: number[] = []
 let card_values_alpha: string[] = []
 let suits: string[] = []
+
+let _value = ""
+let _rand = 0
+let cards: string[] = []
+let _temp_cards: string[] = []
+let scrambled_cards: string[] = []
+let _message = ""
 let GAME_STAGE_ROLE_SELECTION = 0
 let game_stage = 0
+let ROLE_DEALER = 0
+let role = 0
+let ROLE_PLAYER = 0
 let serial_number = 0
 let ROLE_PLAYER = 0
 let role = 0
@@ -172,11 +223,14 @@ init_constants()
 game_stage = GAME_STAGE_ROLE_SELECTION
 init_list_values()
 build_card_list()
+scramble_cards()
 while (game_stage == GAME_STAGE_ROLE_SELECTION) {
     basic.showString("A=DEALER,B=PLAYER")
 }
 basic.forever(function () {
     if (role == ROLE_PLAYER) {
+    	
+    } else if (role == ROLE_DEALER) {
     	
     } else {
     	
