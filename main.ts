@@ -1,13 +1,7 @@
-function construct_msg (sender: number, reciever: number, msg: string) {
-    let value = 0
-    return value
-}
-// ===== HELPERS =====
-function create_message (reciever: number, kind: number, contents: string) {
-    _message = "" + reciever + "|" + kind + "|" + contents
-    return _message
-}
-// ===== INIT LISTS / DECK =====
+
+
+
+
 function init_list_values () {
     suits = [
     "H",
@@ -33,19 +27,23 @@ function init_list_values () {
     10
     ]
 }
-function get_message_contents (message: string) :string {
-    let _last_delimeter_index_contents = 0
+
+function create_message(reciever: number, kind: number, contents: string) {
+    _message = "" + reciever + "|" + kind + "|" + contents
+    return _message
+}
+function get_message_contents (message: string) {
     for (let _k = 0; _k <= message.length - 1; _k++) {
-            if (message.charAt(_k) == "|") {
-                _delimeters_found2 += 1
-                if (_delimeters_found2 == 2) {
-                    return message.substr(_k + 1, message.length - _k)
-                } else {
-                    _last_delimeter_index = _k
-                }
+        if (message.charAt(_k) == "|") {
+            _delimeters_found2 += 1
+            if (_delimeters_found2 == 2) {
+                return message.substr(_k + 1, message.length - _k)
+            } else {
+                _last_delimeter_index = _k
             }
         }
-        return ""
+    }
+    return ""
 }
 function get_message_kind (message: string) {
     for (let _j = 0; _j <= message.length - 1; _j++) {
@@ -56,6 +54,14 @@ function get_message_kind (message: string) {
             } else {
                 _last_delimeter_index = _j
             }
+        }
+    }
+    return -1
+}
+function get_message_reciever(message: string) {
+    for (let _i = 0; _i <= message.length - 1; _i++) {
+        if (message.charAt(_i) == "|") {
+            return parseInt(message.substr(0, _i))
         }
     }
     return -1
@@ -73,6 +79,24 @@ input.onButtonPressed(Button.A, function () {
 // ===== RADIO =====
 radio.onReceivedString(function (msg) {
     // Dealer receives join requests while finding players
+    let _reciever = get_message_reciever(msg)
+    if(_reciever == serial_number){
+        if(role == ROLE_DEALER){
+            msg_recieved_dealer(
+            radio.receivedPacket(RadioPacketProperty.SerialNumber), 
+            get_message_kind(msg),
+            get_message_contents(msg),
+            )
+        }
+        else{
+                msg_recieved_player(
+                    radio.receivedPacket(RadioPacketProperty.SerialNumber),
+                    get_message_kind(msg),
+                    get_message_contents(msg),
+                )
+            
+        }
+    }
     serial_number = radio.receivedPacket(RadioPacketProperty.SerialNumber)
     if (game_stage == GAME_STAGE_FINDING_PLAYERS && role == ROLE_DEALER) {
         if (msg == PACKET_REQUEST_JOIN) {
@@ -84,14 +108,14 @@ radio.onReceivedString(function (msg) {
         }
     }
 })
-function get_message_reciever (message: string) {
-    for (let _i = 0; _i <= message.length - 1; _i++) {
-        if (message.charAt(_i) == "|") {
-            return parseInt(message.substr(0, _i))
-        }
-    }
-    return -1
+
+function msg_recieved_dealer(sender: number, msg_kind: number, msg_contents: string){
+    
 }
+function msg_recieved_player(sender: number, msg_kind: number, msg_contents: string){
+
+}
+
 function build_card_list () {
     cards = []
     for (let s of suits) {
@@ -132,7 +156,6 @@ function select_role (newRole: number) {
 }
 let _display_char = ""
 let players: number[] = []
-let serial_number = 0
 let ROLE_DEALER = 0
 let _delimeters_found = 0
 let _last_delimeter_index = 0
@@ -149,6 +172,7 @@ let ROLE_PLAYER = 0
 let GAME_STAGE_FINDING_PLAYERS = 0
 let PACKET_REQUEST_JOIN = ""
 let _last_delimeter_index2 = 0
+let _last_delimeter_index_contents = 0
 // using name + numeric value with sendValue
 PACKET_REQUEST_JOIN = "join"
 // ===== CONFIG & CONSTANTS =====
@@ -166,12 +190,11 @@ for (let c of cards) {
     datalogger.log(datalogger.createCV(c, c))
 }
 // Show the role choice prompt once (no blocking loop)
+let serial_number = control.deviceSerialNumber()
+let my_message = create_message(serial_number, 1, "this")
+let my_reciever = get_message_reciever(my_message)
+let my_kind = get_message_kind(my_message)
+let my_contents = get_message_contents(my_message)
 
-let _my_message = create_message(69, 1, "this")
-let _my_reciever = get_message_reciever(_my_message)
-let _my_kind = get_message_kind(_my_message)
-let _my_contents = get_message_contents(_my_message)
-
-
-basic.showString(_my_contents)
+basic.showNumber(my_reciever)
 
