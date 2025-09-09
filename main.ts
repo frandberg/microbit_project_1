@@ -33,26 +33,26 @@ function init_list_values () {
     10
     ]
 }
-function get_message_contents (message: string) {
-    let _last_delimeter_index_contents
-for (let _k = 0; _k <= message.length - 1; _k++) {
-        if (message.charAt(_k) == "|") {
-            _delimeters_found2 += 1
-            if (_delimeters_found2 == 3) {
-                return parseInt(message.substr(_last_delimeter_index_contents, _k))
-            } else {
-                _last_delimeter_index = _k
+function get_message_contents (message: string) :string {
+    let _last_delimeter_index_contents = 0
+    for (let _k = 0; _k <= message.length - 1; _k++) {
+            if (message.charAt(_k) == "|") {
+                _delimeters_found2 += 1
+                if (_delimeters_found2 == 2) {
+                    return message.substr(_k + 1, message.length - _k)
+                } else {
+                    _last_delimeter_index = _k
+                }
             }
         }
-    }
-    return -1
+        return ""
 }
 function get_message_kind (message: string) {
     for (let _j = 0; _j <= message.length - 1; _j++) {
         if (message.charAt(_j) == "|") {
             _delimeters_found += 1
             if (_delimeters_found == 2) {
-                return parseInt(message.substr(_last_delimeter_index, _j))
+                return parseInt(message.substr(_last_delimeter_index + 1, _j))
             } else {
                 _last_delimeter_index = _j
             }
@@ -166,18 +166,12 @@ for (let c of cards) {
     datalogger.log(datalogger.createCV(c, c))
 }
 // Show the role choice prompt once (no blocking loop)
-basic.showString("A=DEALER B=PLAYER")
-basic.forever(function () {
-    // Later you can add game flow here.
-    // Example feedback (non-blocking):
-    if (role == ROLE_DEALER && game_stage == GAME_STAGE_FINDING_PLAYERS) {
-        // e.g., flash a dot while waiting for joins
-        led.toggle(0, 0)
-        basic.pause(400)
-    } else if (role == ROLE_PLAYER && game_stage == GAME_STAGE_FINDING_PLAYERS) {
-        led.toggle(4, 0)
-        basic.pause(400)
-    } else {
-        basic.pause(200)
-    }
-})
+
+let _my_message = create_message(69, 1, "this")
+let _my_reciever = get_message_reciever(_my_message)
+let _my_kind = get_message_kind(_my_message)
+let _my_contents = get_message_contents(_my_message)
+
+
+basic.showString(_my_contents)
+
