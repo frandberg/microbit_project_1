@@ -8,7 +8,6 @@
         "datalogger": "*"
     },
     "files": [
-        "main.blocks",
         "main.ts",
         "README.md",
         "main.py"
@@ -23,5 +22,5 @@
     "supportedTargets": [
         "microbit"
     ],
-    "preferredEditor": "blocksprj"
+    "preferredEditor": "tsprj"
 }
