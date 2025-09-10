@@ -100,6 +100,7 @@ function start_game () {
     game_stage = GAME_STAGE_PLAYING
     led.stopAnimation()
     basic.showString("!")
+
 }
 function get_message_reciever (message: string) {
     for (let _i = 0; _i <= message.length - 1; _i++) {
@@ -162,10 +163,13 @@ function msg_recieved_player (sender: number, msg_kind: number, msg_contents: st
         dealer_id = sender
         game_stage = GAME_STAGE_WAITING_FOR_GAME_TO_START
     }
-    if (msg_kind == MSG_START_GAME && game_stage == GAME_STAGE_WAITING_FOR_GAME_TO_START) {
+    else if (msg_kind == MSG_START_GAME && game_stage == GAME_STAGE_WAITING_FOR_GAME_TO_START) {
         start_game()
         send_message(0, MSG_PLAYER_JOIN_CONFIRM, "")
         game_stage = GAME_STAGE_PLAYING
+    }
+    else if(game_stage == GAME_STAGE_PLAYING && msg_kind == MSG_PLAYER_START_TURN ){
+        play_round_player()
     }
 }
 function select_role (selected_role: number) {
@@ -182,6 +186,24 @@ function select_role (selected_role: number) {
     }
     basic.showString(_display_char)
 }
+
+function deal_cards(){
+
+}
+
+
+function play_round_dealer(){
+  deal_cards()
+  for(let _player_round of players){
+    send_message(_player_round, MSG_PLAYER_START_TURN, "")
+  } 
+
+}
+function play_round_player(){
+
+}
+
+
 let _display_char = ""
 let dealer_id = 0
 let i = 0
@@ -223,6 +245,7 @@ ROLE_PLAYER = 1
 MSG_PLAYER_JOIN_CONFIRM = 1
 MSG_START_GAME = 2
 let MSG_SEARCHING_FOR_PLAYERS = 3
+let MSG_PLAYER_START_TURN = 4
 serial_number = control.deviceSerialNumber()
 init_constants()
 game_stage = GAME_STAGE_ROLE_SELECTION
@@ -234,7 +257,7 @@ while (game_stage == GAME_STAGE_ROLE_SELECTION) {
 }
 basic.forever(function () {
     if (role == ROLE_PLAYER) {
-    	
+      
     } else if (role == ROLE_DEALER) {
     	
     } else {
