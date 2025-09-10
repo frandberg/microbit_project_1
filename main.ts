@@ -145,6 +145,7 @@ function msg_recieved_dealer (sender: number, msg_kind: number, msg_contents: st
 input.onButtonPressed(Button.AB, function () {
     if (game_stage == GAME_STAGE_FINDING_PLAYERS) {
         if (role == ROLE_DEALER) {
+            datalogger.log(datalogger.createCV("role", role))
             send_message(0, MSG_START_GAME, "")
             start_game()
         }
@@ -167,9 +168,10 @@ function msg_recieved_player (sender: number, msg_kind: number, msg_contents: st
         game_stage = GAME_STAGE_PLAYING
     }
 }
-function select_role (role: number) {
+function select_role (selected_role: number) {
     game_stage = GAME_STAGE_FINDING_PLAYERS
-    role = role
+    role = selected_role
+    datalogger.log(datalogger.createCV("select_role_role", role))
     led.stopAnimation()
     if (role == ROLE_DEALER) {
         _display_char = "D"
@@ -212,8 +214,8 @@ let ROLE_PLAYER = 0
 let GAME_STAGE_PLAYING = 0
 let GAME_STAGE_WAITING_FOR_GAME_TO_START = 0
 let GAME_STAGE_FINDING_PLAYERS = 0
-let searching_for_players = 0
 let _message2 = ""
+let searching_for_players = 0
 GAME_STAGE_FINDING_PLAYERS = 1
 GAME_STAGE_WAITING_FOR_GAME_TO_START = 2
 GAME_STAGE_PLAYING = 3
