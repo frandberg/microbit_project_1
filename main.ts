@@ -9,7 +9,6 @@ function scramble_cards () {
         scrambled_cards.push(_value)
     }
 }
-// "dealer" or "player"
 function init_list_values () {
     suits = [
     "H",
@@ -213,8 +212,8 @@ let ROLE_PLAYER = 0
 let GAME_STAGE_PLAYING = 0
 let GAME_STAGE_WAITING_FOR_GAME_TO_START = 0
 let GAME_STAGE_FINDING_PLAYERS = 0
-let _message2 = ""
 let searching_for_players = 0
+let _message2 = ""
 GAME_STAGE_FINDING_PLAYERS = 1
 GAME_STAGE_WAITING_FOR_GAME_TO_START = 2
 GAME_STAGE_PLAYING = 3
@@ -228,6 +227,9 @@ game_stage = GAME_STAGE_ROLE_SELECTION
 init_list_values()
 build_card_list()
 scramble_cards()
+while (game_stage == GAME_STAGE_ROLE_SELECTION) {
+    basic.showString("A=DEALER:B=PLAYER")
+}
 basic.forever(function () {
     if (role == ROLE_PLAYER) {
     	
