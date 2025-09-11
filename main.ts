@@ -72,6 +72,8 @@ input.onButtonPressed(Button.A, function () {
             send_message(0, MSG_JOIN_GAME_PING, "")
             control.waitMicros(1000000)
         }
+    } else if (game_stage == GAME_STAGE_MY_TURN) {
+        change_bet(-10)
     }
 })
 radio.onReceivedString(function (msg) {
@@ -129,6 +131,9 @@ function add_player (player_id: number) {
 function init_constants () {
     GAME_STAGE_ROLE_SELECTION = 0
     GAME_STAGE_FINDING_PLAYERS = 1
+    GAME_STAGE_WAITING_FOR_GAME_TO_START = 2
+    GAME_STAGE_PLAYING = 3
+    GAME_STAGE_MY_TURN = 4
     ROLE_DEALER = 0
     ROLE_PLAYER = 1
 }
@@ -155,19 +160,51 @@ input.onButtonPressed(Button.B, function () {
     if (game_stage == GAME_STAGE_ROLE_SELECTION) {
         select_role(ROLE_PLAYER)
         game_stage = GAME_STAGE_FINDING_PLAYERS
+    } else if (game_stage == GAME_STAGE_MY_TURN) {
+        change_bet(10)
     }
 })
+
+input.onScreenDown(function () {
+    if (game_stage == GAME_STAGE_MY_TURN) {
+        fold()
+    }
+})
+
+input.onShake(function () {
+    if (game_stage == GAME_STAGE_MY_TURN) {
+        call_bet_raise()
+    }
+})
+
 function msg_recieved_player (sender: number, msg_kind: number, msg_contents: string) {
     if (game_stage == GAME_STAGE_FINDING_PLAYERS && msg_kind == MSG_JOIN_GAME_PING) {
         dealer_id = sender
         game_stage = GAME_STAGE_WAITING_FOR_GAME_TO_START
-    }
-    if (msg_kind == MSG_START_GAME && game_stage == GAME_STAGE_WAITING_FOR_GAME_TO_START) {
+    } else if (msg_kind == MSG_START_GAME && game_stage == GAME_STAGE_WAITING_FOR_GAME_TO_START) {
         start_game()
         send_message(0, MSG_PLAYER_JOIN_CONFIRM, "")
         game_stage = GAME_STAGE_PLAYING
+    } else if (msg_kind == MSG_PLAYER_START_TURN) {
+        game_stage = GAME_STAGE_MY_TURN
+        highest_bet = parseInt(msg_contents)
     }
 }
+
+function change_bet(amount: number) {
+    led.stopAnimation()
+    highest_bet += amount
+}
+
+function fold() {
+    send_message(dealer_id, MSG_PLAYER_FINISH_TURN, "-1")
+}
+
+function call_bet_raise() {
+    //we use the same function for calling, betting and raising
+    send_message(dealer_id, MSG_PLAYER_FINISH_TURN, highest_bet.toString())
+}
+
 function select_role (selected_role: number) {
     game_stage = GAME_STAGE_FINDING_PLAYERS
     role = selected_role
@@ -182,6 +219,11 @@ function select_role (selected_role: number) {
     }
     basic.showString(_display_char)
 }
+
+let money = 200;
+let highest_bet = 0;
+let GAME_STAGE_MY_TURN = 0;
+
 let _display_char = ""
 let dealer_id = 0
 let i = 0
@@ -210,15 +252,18 @@ let game_stage = 0
 let serial_number = 0
 let MSG_START_GAME = 0
 let MSG_PLAYER_JOIN_CONFIRM = 0
+let MSG_PLAYER_START_TURN = 4
+let MSG_PLAYER_FINISH_TURN = 5
 let ROLE_PLAYER = 0
 let GAME_STAGE_PLAYING = 0
 let GAME_STAGE_WAITING_FOR_GAME_TO_START = 0
 let GAME_STAGE_FINDING_PLAYERS = 0
+
+
+let players_left_to_call = 0
 let _message2 = ""
 let searching_for_players = 0
 GAME_STAGE_FINDING_PLAYERS = 1
-GAME_STAGE_WAITING_FOR_GAME_TO_START = 2
-GAME_STAGE_PLAYING = 3
 ROLE_PLAYER = 1
 MSG_PLAYER_JOIN_CONFIRM = 1
 MSG_START_GAME = 2
@@ -234,7 +279,9 @@ while (game_stage == GAME_STAGE_ROLE_SELECTION) {
 }
 basic.forever(function () {
     if (role == ROLE_PLAYER) {
-    	
+    	if (game_stage == GAME_STAGE_MY_TURN) {
+            basic.showNumber(highest_bet)
+        }
     } else if (role == ROLE_DEALER) {
     	
     } else {
