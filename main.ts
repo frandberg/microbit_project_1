@@ -73,7 +73,7 @@ input.onButtonPressed(Button.A, function () {
             control.waitMicros(1000000)
         }
     } else if (game_stage == GAME_STAGE_MY_TURN) {
-        change_bet(-10)
+        change_bet(-1)
     }
 })
 radio.onReceivedString(function (msg) {
@@ -196,7 +196,7 @@ input.onButtonPressed(Button.B, function () {
         select_role(ROLE_PLAYER)
         game_stage = GAME_STAGE_FINDING_PLAYERS
     } else if (game_stage == GAME_STAGE_MY_TURN) {
-        change_bet(10)
+        change_bet(1)
     }
 })
 
@@ -222,7 +222,9 @@ function msg_recieved_player(sender: number, msg_kind: number, msg_contents: str
         game_stage = GAME_STAGE_PLAYING
     } else if (msg_kind == MSG_PLAYER_START_TURN) {
         game_stage = GAME_STAGE_MY_TURN
+        led.stopAnimation()
         highest_bet = parseInt(msg_contents)
+        bet = highest_bet
     }
 }
 function play_round_dealer() {
@@ -238,16 +240,25 @@ function play_round_dealer() {
 
 function change_bet(amount: number) {
     led.stopAnimation()
-    highest_bet += amount
+
+    if (bet + amount > money) {
+        bet = money;
+    } else if (bet + amount < highest_bet) {
+        bet = highest_bet
+    } else {
+        bet += amount
+    }
 }
 
 function fold() {
     send_message(dealer_id, MSG_PLAYER_FINISH_TURN, "-1")
+    game_stage = GAME_STAGE_PLAYING
 }
 
 function call_bet_raise() {
     //we use the same function for calling, betting and raising
-    send_message(dealer_id, MSG_PLAYER_FINISH_TURN, highest_bet.toString())
+    send_message(dealer_id, MSG_PLAYER_FINISH_TURN, bet + "")
+    game_stage = GAME_STAGE_PLAYING
 }
 
 function select_role(selected_role: number) {
@@ -267,6 +278,7 @@ function select_role(selected_role: number) {
 
 let money = 200;
 let highest_bet = 0;
+let bet = 0;
 let GAME_STAGE_MY_TURN = 0;
 
 let _display_char = ""
@@ -323,7 +335,9 @@ while (game_stage == GAME_STAGE_ROLE_SELECTION) {
 basic.forever(function () {
     if (role == ROLE_PLAYER) {
         if (game_stage == GAME_STAGE_MY_TURN) {
-            basic.showNumber(highest_bet)
+            basic.showNumber(bet)
+        } else if (game_stage == GAME_STAGE_PLAYING) {
+            basic.showString("WAITING")
         }
     } else if (role == ROLE_DEALER) {
 
