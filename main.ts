@@ -132,6 +132,7 @@ function build_card_list() {
 }
 function add_player(player_id: number) {
     players.push(player_id)
+    player_money.push(200)
 }
 function init_constants() {
     GAME_STAGE_ROLE_SELECTION = 0
@@ -159,15 +160,21 @@ function msg_recieved_dealer(sender: number, msg_kind: number, msg_contents: str
     }
     if (game_stage == GAME_STAGE_PLAYING) {
         if (msg_kind == MSG_PLAYER_FINISH_TURN) {
-            highest_bet = parseInt(msg_contents)
-            send_message(players[current_player], MSG_PLAYER_START_TURN, highest_bet + "")
-            if (current_player + 1 == players.length) {
+            basic.showString("Player finished turn")
+            if(parseInt(msg_contents) > highest_bet){
+                highest_bet = parseInt(msg_contents)
+                players_left_to_call = players.length
+            }else {
+                players_left_to_call -= 1
+            }
+            if (current_player ==  players.length - 1) {
                 current_player = 0
             } else {
                 current_player += 1
             }
             if (players_left_to_call > 0) {
                 send_message(current_player, MSG_PLAYER_START_TURN, "" + highest_bet)
+
             }
         }
     }
@@ -224,7 +231,10 @@ function play_round_dealer() {
     // datalogger.log(datalogger.createCV("play round dealer", 0))
     deal_cards()
     players_left_to_call = players.length
-    send_message(players[0], MSG_PLAYER_START_TURN, "0")
+    current_player = 0
+    highest_bet = 0
+    send_message(players[0], MSG_PLAYER_START_TURN, "" + current_player)
+
 }
 
 
@@ -294,6 +304,7 @@ let _rand = 0
 let cards: string[] = []
 let _temp_cards: string[] = []
 let scrambled_cards: string[] = []
+let player_money: number[] = []
 let GAME_STAGE_ROLE_SELECTION = 0
 let game_stage = 0
 let serial_number = 0
